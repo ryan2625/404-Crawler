@@ -1,0 +1,7 @@
+Web crawler performance issues:
+
+Narrow search time by excluding links we KNOW will work and appear often
+
+(SUCH AS ALL links in the mega menu)
+
+OR everytime I encounter a non 400 level error I add it to a list to ignore.

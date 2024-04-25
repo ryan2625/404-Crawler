@@ -5,4 +5,10 @@ url = "https://www.irem.org/"
 
 result = requests.get(url)
 
-print(result.text)
+doc = BeautifulSoup(result.text, "html.parser")
+
+content = doc.find_all(text="IREM")
+
+var = content[0].parent
+
+print(var.find("span"))
