@@ -6,6 +6,7 @@ import time
 
 # Array of links that we have already gotten a 200 status code from 
 # (Don't need to recheck these links, save resources)
+# Need to update docs
 allSafeLinks = []
 allBrokenLinks = []
 allBrokenLinksTotal = []
