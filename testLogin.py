@@ -27,6 +27,7 @@ res = requests.get()
 
 
 '''
+NEED to open session with requests
 https://www.irem.org/sso/login.aspx
 Make post request with EMAIL
 get(url) LOCATION
