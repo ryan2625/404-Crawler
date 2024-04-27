@@ -1,39 +1,51 @@
 from bs4 import BeautifulSoup
 import requests
-from openpyxl import Workbook
-from creds import creds1
-import time
+from creds import creds
 from all_pages import arr
-from pprint import pprint
+from urllib.parse import urlparse
 
-'''
-url = "https://www.irem.org/chapters/canadian-chapter-resources/chapter-services-for-canada"
+loginPage = "https://www.irem.org/sso/login.aspx"
 
-page = requests.get(url)
+def getSession(login):
+    emailPage = requests.get(login)
+    parsedEmailPage = BeautifulSoup(emailPage.content, "html.parser")
 
-page = BeautifulSoup(page.content, "html.parser")
+    payload = setASPHiddenFields(parsedEmailPage)
+    payload["email"] = creds[0]
+    payload["usr_btn"] = "Next"
+    with requests.Session() as sesh:
+        sesh.get(login)
+        postVal = sesh.post(login, data=payload)
+    
+    passwordPage = requests.get(postVal.url)
+    parsedPasswordPage = BeautifulSoup(passwordPage.content, "html.parser")
 
-print(page.prettify())
+    payloadFinal = setASPHiddenFields(parsedPasswordPage)
+    payloadFinal["ctl00$main$LoginTextBox"] = creds[0]
+    payloadFinal["ctl00$main$PasswordTextBox"] = creds[1]
+    payloadFinal["ctl00$main$SubmitButton"] = "Login"
+    
+    parseUrl = urlparse(postVal.url)
+    toFetch = "https://my2.irem.org/SSO/LoginTemplates/DefaultLogin.aspx?" + parseUrl[4]
+    sesh.get(postVal.url)
+    finalURL = sesh.post(toFetch, data=payloadFinal)
+    print(sesh.cookies)
+    print(sesh.headers)
+    print(finalURL.url)
+    return sesh
 
-for link in arr:
-    code = requests.get(link)
-    print(str(code.status_code))
-    '''
 
+def setASPHiddenFields(page):
+    viewState = page.find("input", {"name" : "__VIEWSTATE"})["value"]
+    viewStateGen = page.find("input", {"name" : "__VIEWSTATEGENERATOR"})["value"]
+    eventValid = page.find("input", {"name" : "__EVENTVALIDATION"})["value"]
+    payload = {"__EVENTTARGET": "", 
+            "__EVENTARGUMENT": "", 
+            "__VIEWSTATE":viewState, 
+            "__VIEWSTATEGENERATOR":viewStateGen, 
+            "__EVENTVALIDATION": eventValid,
+    }
+    return payload
 
-url = "https://www.irem.org/sso/login.aspx"
+getSession(loginPage)
 
-res = requests.get()
-
-
-'''
-NEED to open session with requests
-https://www.irem.org/sso/login.aspx
-Make post request with EMAIL
-get(url) LOCATION
-
-THEN
-make post request with username and password
-
-https://my2.irem.org/SSO/LoginTemplates/DefaultLogin.aspx?vi=8&vt=36df599efebfc7e19146a16b1d829de21fe447922d3a8bf0415de476cb65c83ae288a95a7436848396e812fce24686f46e527b897502630b58f2c4c317acc61c
-'''
