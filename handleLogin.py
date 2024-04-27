@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 Author: Ryan Freas
 Date: 4/27/2024
 '''
-
 loginPage = "https://www.irem.org/sso/login.aspx"
 
 def getSession(login):
@@ -34,8 +33,10 @@ def getSession(login):
     toFetch = "https://my2.irem.org/SSO/LoginTemplates/DefaultLogin.aspx?" + parseUrl[4]
     sesh.get(postVal.url)
     finalURL = sesh.post(toFetch, data=payloadFinal)
-    print(sesh.cookies)
-    print(sesh.headers)
+    # print(sesh.cookies)
+    # print(sesh.headers)
+    # If login was a complete success, expect
+    # to see https://www.irem.org/home
     print(finalURL.url)
     return sesh
 
@@ -51,6 +52,4 @@ def setASPHiddenFields(page):
             "__EVENTVALIDATION": eventValid,
     }
     return payload
-
-getSession(loginPage)
 
