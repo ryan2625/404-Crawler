@@ -4,6 +4,11 @@ from creds import creds
 from all_pages import arr
 from urllib.parse import urlparse
 
+'''
+Author: Ryan Freas
+Date: 4/27/2024
+'''
+
 loginPage = "https://www.irem.org/sso/login.aspx"
 
 def getSession(login):
