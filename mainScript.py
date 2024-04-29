@@ -2,20 +2,24 @@ import time
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 from all_pages import arr
-from all_pages2 import arr2
+from all_safe import safeArr
 from handleLogin import getSession
+from bad_tuple import bad
+from urllib.parse import quote
 '''
 TODO:  
 MORE testing - create excel sheet for 5 links in arr2
 For each of the sheets manually check and make sure its capturing all the links you want
+
+OR just create your own index html and manually input links
 '''
 
 LOGIN_PAGE = "https://www.irem.org/sso/login.aspx"
-allSafeLinks = []
+allSafeLinks = safeArr
 allBrokenLinks = []
 miscBroken = []
 linkCodeMatch = {}
-arrTuple =[]
+arrTuple = bad
 session = getSession(LOGIN_PAGE)
 n = 0
 
@@ -25,7 +29,7 @@ def handleNewLink(linkHref, link):
     global allSafeLinks
     global session
     global linkCodeMatch
-    if len(linkHref) > 3 and linkHref[:4] == "http" and linkHref != "https://":
+    if len(linkHref) > 3 and (linkHref[:4] == "http" or linkHref[:3] == "www"):
         print(linkHref) 
         try: 
             code = session.get(linkHref, timeout=30)
@@ -39,10 +43,14 @@ def handleNewLink(linkHref, link):
     # Only mark link as safe if we get 200 level response
         if code[0] == "2": 
             allSafeLinks.append(linkHref)
-        else:
+        elif code == "404":
             linkCodeMatch[linkHref] = code
             arrTuple.append((link, linkHref, code))
             allBrokenLinks.append(linkHref)
+        else:
+            linkCodeMatch[linkHref] = code
+            allBrokenLinks.append(linkHref)
+            miscBroken.append(link, linkHref)
 
 # If link is empty, href="javascript:void(0)"", #, etc
     else:
@@ -95,7 +103,7 @@ def main():
     global arrTuple
     global allSafeLinks
     global session
-    for link in arr2:
+    for link in arr:
         n+=1 
         print("LINK ", n)
         url = link
@@ -113,6 +121,7 @@ def main():
                 time.sleep(5)
                 tries+=1
         if (tries >= 2) :
+            linkCodeMatch[link] = "ERR: TIMEOUT"
             allBrokenLinks.append(link)
             arrTuple.append((link, link, f"ERR MAIN TIMEOUT: {err}"))
             continue

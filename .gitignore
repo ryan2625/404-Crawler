@@ -8,3 +8,13 @@ all_pages copy.py
 __pycache__/all_pages2.cpython-312.pyc
 __pycache__/all_pages.cpython-312.pyc
 __pycache__/handleLogin.cpython-312.pyc
+all_pages2.py
+all_safe.xlsx
+tryCourse.py
+all_safe.py
+bad_tuple.py
+extra-arr.py
+index.html
+try2.py
+__pycache__/all_safe.cpython-312.pyc
+__pycache__/bad_tuple.cpython-312.pyc
