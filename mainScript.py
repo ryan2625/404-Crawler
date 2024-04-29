@@ -5,7 +5,6 @@ from all_pages import arr
 from all_safe import safeArr
 from handleLogin import getSession
 from bad_tuple import bad
-from urllib.parse import quote
 '''
 TODO:  
 MORE testing - create excel sheet for 5 links in arr2
@@ -50,7 +49,7 @@ def handleNewLink(linkHref, link):
         else:
             linkCodeMatch[linkHref] = code
             allBrokenLinks.append(linkHref)
-            miscBroken.append(link, linkHref)
+            miscBroken.append((link, linkHref))
 
 # If link is empty, href="javascript:void(0)"", #, etc
     else:
@@ -76,7 +75,8 @@ def handleSubLinks(all_links, link):
         else:
             if (linkHref in allBrokenLinks):
                 code = linkCodeMatch[linkHref]
-                arrTuple.append((link, linkHref, code))
+                if (code == "404"):
+                    arrTuple.append((link, linkHref, code))
 
 def saveToExcel():
     wb = Workbook()
